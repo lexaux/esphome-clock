@@ -1,0 +1,17 @@
+
+lights:
+  - platform: fastled_clockless
+    name: "Living Room Perimeter"
+    id: living_room_perimeter
+    rgb_order: RGB
+    chipset: WS2812B
+    pin: D5
+    num_leds: 10
+
+  - platform: fastled_clockless
+    name: "Living Room TV Side"
+    id: living_room_tv_side
+    rgb_order: RGB
+    chipset: WS2812B
+    pin: D6
+    num_leds: 150

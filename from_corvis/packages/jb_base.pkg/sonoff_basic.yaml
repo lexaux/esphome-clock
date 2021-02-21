@@ -1,0 +1,43 @@
+esphome:
+  name: ${node_name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: ./build/${node_name}
+
+# Enable logging
+logger:
+  level: ${log_level}
+
+# NTP Configuration
+time:
+  - <<: !include ./common/time.config.yaml
+
+# Wi-Fi Configuration
+<<: !include ./common/wifi.inc.yaml
+
+# Enable Over the Air updates
+<<: !include ./common/ota.inc.yaml
+
+# Enable Home Assistant API
+<<: !include common/api.inc.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: True
+    name: "${friendly_node_name} Button"
+    on_press:
+      - switch.toggle: relay
+
+switch:
+  - platform: gpio
+    name: "${friendly_node_name} Relay"
+    pin: GPIO12
+    id: relay
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes

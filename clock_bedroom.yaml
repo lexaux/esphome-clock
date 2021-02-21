@@ -1,0 +1,4 @@
+substitutions:
+  node_name: clock_bedroom
+
+<<: !include clock_common.yaml

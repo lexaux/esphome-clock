@@ -1,0 +1,4 @@
+substitutions:
+  node_name: clock_kitchen
+
+<<: !include clock_common.yaml

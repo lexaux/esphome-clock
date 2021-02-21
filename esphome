@@ -1,0 +1,23 @@
+#!/bin/sh
+
+cd "$(dirname "$0")"
+
+# YOU MIGHT NEED TO UPDATE THIS 
+USB_DEVICE="/dev/ttyUSB0"
+#ESPHOME_VERSION="dev"
+ESPHOME_VERSION="1.15.1"
+
+if [ -w $USB_DEVICE ]; then
+    echo "Detected USB device: $USB_DEVICE"
+else
+    USB_DEVICE=""
+fi
+
+if [ "$USB_DEVICE" ]; then
+    echo "Using USB device"
+    USB_DEVICE="--device $USB_DEVICE"
+else
+    USB_DEVICE=""
+fi
+ARGUMENTS=`echo --rm -v "${PWD}":/config -p 6052:6052 $USB_DEVICE -it esphome/esphome:$ESPHOME_VERSION $@`
+docker run $ARGUMENTS

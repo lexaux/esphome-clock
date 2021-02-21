@@ -1,0 +1,36 @@
+esphome:
+  name: ${node_name}
+  platform: ESP8266
+  board: esp01_1m
+  build_path: ./build/${node_name}
+  includes:
+    - packages/sonoff_dimmer.pkg/d1_dimmer_no_rf.h
+
+# Enable logging
+logger:
+  level: ${log_level}
+  # Make sure to disable serial logging as it will interfere with our serial connection
+  baud_rate: 0
+
+# Wi-Fi Configuration
+<<: !include ../jb_base.pkg/common/wifi.inc.yaml
+
+# Enable Over the Air updates
+<<: !include ../jb_base.pkg/common/ota.inc.yaml
+
+# Enable Home Assistant API
+<<: !include ../jb_base.pkg/common/api.inc.yaml
+
+# Define our custom light component
+light:
+  - platform: custom
+    lambda: |-
+      auto dimmer_light = new Sonoff_D1_Dimmer();
+      App.register_component(dimmer_light);
+      return {dimmer_light};
+    lights:
+      - name: ${friendly_node_name}
+        id: main
+        restore_mode: RESTORE_DEFAULT_OFF
+        gamma_correct: 0
+        default_transition_length: 0.1s

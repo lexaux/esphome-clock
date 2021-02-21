@@ -1,0 +1,77 @@
+esphome:
+  name: ${node_name}
+  platform: ESP8266
+  board: d1_mini
+  build_path: build/${node_name}
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  domain: .home
+
+# Enable logging
+logger:
+  logs:
+    sensor: INFO
+    adc: INFO
+
+api:
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+time:
+  - platform: sntp
+    id: homeassistant_time
+    servers: 0.ua.pool.ntp.org
+    timezone: Europe/Kiev
+
+uart:
+  rx_pin: GPIO3
+  tx_pin: GPIO1
+  baud_rate: 9600
+
+i2c:
+  scan: true
+  scl: GPIO4
+  sda: GPIO5
+
+sensor:
+  - platform: adc
+    pin: A0
+    name: "Brightness"
+    internal: true
+    id: brightness_sensor
+    update_interval: 0.2s
+    filters:
+      calibrate_linear:
+        - 0.0 -> 7
+        - 1.0 -> 0
+
+  - platform: mhz19
+    co2:
+      name: "CO2 value ppm"
+    temperature:
+      name: "MH-Z19 temperature"
+    update_interval: 60s
+    automatic_baseline_calibration: false
+
+  - platform: htu21d
+    temperature:
+      name: "Temperature"
+    humidity:
+      name: "Humidity"
+    update_interval: 60s
+
+
+display:
+  platform: tm1637
+  id: display_7seg
+  clk_pin: D5
+  dio_pin: D6
+  update_interval: 0.2s
+  lambda: |-
+    it.strftime("%H.%M", id(homeassistant_time).now());
+    it.set_intensity(round(id(brightness_sensor).state));
+

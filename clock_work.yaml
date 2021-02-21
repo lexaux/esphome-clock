@@ -1,0 +1,4 @@
+substitutions:
+  node_name: clock_work
+
+<<: !include clock_common.yaml
