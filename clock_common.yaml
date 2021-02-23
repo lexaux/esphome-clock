@@ -16,6 +16,7 @@ logger:
     adc: INFO
 
 api:
+  reboot_timeout: 0s
 
 ota:
   safe_mode: true
@@ -24,7 +25,8 @@ ota:
 time:
   - platform: sntp
     id: homeassistant_time
-    servers: 0.ua.pool.ntp.org
+#    servers: 0.ua.pool.ntp.org
+    servers: 192.168.88.1
     timezone: Europe/Kiev
 
 uart:
