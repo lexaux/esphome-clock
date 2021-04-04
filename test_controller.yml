@@ -1,0 +1,74 @@
+# ATTENTION: Update the following files before compiling:
+#      packages/jb_base.pkg/common/secrets.yaml
+#      packages/jb_base.pkg/common/wifi.inc.yaml
+substitutions:
+  # This will be the host name
+  node_name: test_controller
+  friendly_node_name: Test Controller
+  log_level: DEBUG
+
+
+packages:
+  board: !include packages/jb_base.pkg/esp32_d1_mini.yaml
+  default_sensors: !include packages/jb_base.pkg/default_sensors.yaml
+  default_controls: !include packages/jb_base.pkg/default_controls.yaml
+
+#dallas:
+#  pin: GPIO18
+
+pcf8574:
+  - id: 'output_extender'
+    address: 0x27
+    pcf8575: False
+  - id: 'input_extender'
+    address: 0x26
+    pcf8575: False
+
+binary_sensor:
+  - platform: gpio
+    name: "Input Pin #1"
+    pin:
+      pcf8574: input_extender
+      number: 4
+      mode: INPUT
+      inverted: False
+    filters:
+      - delayed_on_off: 40ms
+    on_click:
+      then:
+        switch.toggle: "switch_led"
+
+
+
+switch:
+  - platform: gpio
+    name: "LED Pin #1"
+    id: switch_led
+    pin:
+      pcf8574: output_extender
+      number: 0
+      mode: output
+      inverted: true
+  - platform: gpio
+    name: "LED Pin #2"
+    id: switch_led2
+    pin:
+      pcf8574: output_extender
+      number: 1
+      mode: output
+      inverted: true
+
+output:
+  - platform: ledc
+    pin: GPIO26
+    id: out_pwm_led
+
+light:
+  - platform: monochromatic
+    output: out_pwm_led
+    name: "Sample Light"
+
+#sensor:
+#  - platform: dallas
+#    address: 0x9867783C12646128
+#    name: "Test temp"
