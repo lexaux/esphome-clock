@@ -29,15 +29,18 @@ time:
     servers: 192.168.88.1
     timezone: Europe/Kiev
 
-uart:
-  rx_pin: GPIO3
-  tx_pin: GPIO1
-  baud_rate: 9600
+#uart:
+#  rx_pin: GPIO3
+#  tx_pin: GPIO1
+#  baud_rate: 9600
 
 i2c:
   scan: true
   scl: GPIO4
   sda: GPIO5
+
+dallas:
+  - pin: D6
 
 sensor:
   - platform: adc
@@ -50,14 +53,14 @@ sensor:
       calibrate_linear:
         - 0.0 -> 7
         - 1.0 -> 0
-
-  - platform: mhz19
-    co2:
-      name: "CO2 value ppm"
-    temperature:
-      name: "MH-Z19 temperature"
-    update_interval: 60s
-    automatic_baseline_calibration: false
+#
+#  - platform: mhz19
+#    co2:
+#      name: "CO2 value ppm"
+#    temperature:
+#      name: "MH-Z19 temperature"
+#    update_interval: 60s
+#    automatic_baseline_calibration: false
 
   - platform: htu21d
     temperature:
