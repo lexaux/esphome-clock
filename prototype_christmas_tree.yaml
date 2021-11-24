@@ -4,10 +4,10 @@ esphome:
   board: wemos_d1_mini32
   build_path: build/prototype_christmas_tree
 
-#wifi:
-#  ssid: !secret wifi_ssid
-#  password: !secret wifi_password
-#  domain: .home
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  domain: .home
 
 # Enable logging
 logger:
@@ -15,46 +15,71 @@ logger:
     sensor: INFO
     adc: INFO
 
-#api:
-#  reboot_timeout: 0s
-#
-#ota:
-#  safe_mode: true
-#  password: !secret ota_password
+api:
+  reboot_timeout: 0s
 
-#time:
-#  - platform: sntp
-#    id: homeassistant_time
-#    servers: 192.168.88.1
-#    timezone: Europe/Kiev
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+time:
+  - platform: sntp
+    id: homeassistant_time
+    servers: 192.168.88.1
+    timezone: Europe/Kiev
+
+globals:
+  - id: christmas_status
+    type: boolean
+    restore_value: true
+    initial_value: "true"
+
+switch:
+  - platform: template
+    name: "Christmas Lights"
+    id: switch_both_lights
+    lambda: |-
+          return id(christmas_status);
+    turn_on_action:
+      - lambda: |-
+          id(christmas_status) = true;
+      - light.turn_on: led_a
+      - light.turn_on: led_b
+    turn_off_action:
+      - lambda: |-
+           id(christmas_status) = false;
+      - light.turn_off: led_a
+      - light.turn_off: led_b
+
 
 light:
   - platform: monochromatic
     id: led_a
     name: "Garland A"
     output: led_pwm_a
+    internal: true
     restore_mode: RESTORE_DEFAULT_ON
     effects:
       - pulse:
           name: default_pulse_a
-          transition_length: 3s
+          transition_length: 2.9s
           update_interval: 3s
     on_turn_on:
       then:
         - light.control:
             id: led_a
             effect: default_pulse_a
-
   - platform: monochromatic
     id: led_b
     name: "Garland B"
     output: led_pwm_b
+    internal: true
     restore_mode: RESTORE_DEFAULT_ON
     effects:
       - pulse:
           name: default_pulse_b
-          transition_length: 30s
-          update_interval: 30s
+          transition_length: 3.9s
+          update_interval: 4s
     on_turn_on:
       then:
         - light.control:
@@ -77,5 +102,4 @@ binary_sensor:
       mode: INPUT_PULLUP
     name: "Control Button"
     on_press:
-      - light.toggle: led_a
-      - light.toggle: led_b
+      - switch.toggle: switch_both_lights
