@@ -2,7 +2,7 @@
 Smart clock with sensors built with ESP Home
 
 ## Schematics and PCB design 
-https://easyeda.com/editor#id=325fd9a46f6f46d78fa998621406d1d9|1ad2b90e5d274dfcbf01dab694824f95
+https://oshwlab.com/lexaux/dimming-esp-clock-auto
 
 ## Features
 
